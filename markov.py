@@ -7,8 +7,8 @@ import sys
 def open_and_read_file(file_path1, file_path2):
     """Take file path as string; return text as string.
 
-    Takes a string that is a file path, opens the file, and turns
-    the file's contents as one string of text.
+    Takes string that are file names, opens the files, and turns
+    the files' contents into one string of text.
     """
 
     contents1 = open(file_path1).read()
@@ -45,76 +45,79 @@ def make_chains(text_string, n):
     """
 
     chains = {}
-    #n = 5
+    # split() defaults to splitting at white space
     words = text_string.split()
-    #split() defaults to splitting at white space
 
-    for i in range(len(words)):
     # using range turns it into a list of indices to loop through
     # rather than looping over the words, allowing you to access
     # + 1 or +2 for example
-        key = tuple(words[i:n+i % len(words)])
-        #key = (words[i], words[(i + 1) % len(words)])
+    for i in range(len(words)):
         # assigning a tuple to the var 'key', which is the first
-        # two words in the list of words. using % allows you to
+        # n words in the list of words. using % allows you to
         # loop around from the end back to the beginning. this won't
-        # have an effect until you are at the end of the list i.e.
-        # 5 % len(words) =
-        if key not in chains:
+        # have an effect until you are at the end of the list
+        key = tuple(words[i:n+i % len(words)])
+
         #if the key isn't in the dictionary:
-            chains[key] = []
+        if key not in chains:
             #add an empty list as the value
-        chains[key].append(words[(i + n) % len(words)])
+            chains[key] = []
         # add the 3rd word to the value list. this also uses mod
         # to loop over the end of the list
+        chains[key].append(words[(i + n) % len(words)])
+    # adds None value to the end for a stopping point
     chains[key].append(None)
-
+    # return the filled up dictoinary
     return chains
 
 
 def make_text(chains, n):
     """Return text from chains."""
 
+    # makes a list of all keys in the dictionary 'chains'
     random_keys = chains.keys()
-    #makes a list of all keys in the dictionary 'chains'
-    #n = 5
+
     while True:
-
+        # chooses a random key from the list of keys
         random_key = choice(random_keys)
-        #chooses a random key from the list of keys
-
+        # stores the tuple in a list from beginning to n
         words = list(random_key[:n])
-
-        #stores the tuple in a list
+        # if the first word isn't title case, keep trying
         if words[0].istitle() is not True:
-        #if the first word isn't title case, keep trying
             continue
         else:
             break
 
     while True:
+        # checks if the last letter of the last word is any of these chars
         if words[-1][-1] in ('?!.'):
             break
+        # checks if the key is in the dictionary yet
         if random_key not in chains:
             break
-        third_word = choice(chains[random_key])
+        # adds the next word randomly
+        next_word = choice(chains[random_key])
 
-        if third_word is None:
+        # checks if the word is None and ends the markov chain
+        if next_word is None:
             words = words[:-1]
             break
 
-        words.append(third_word)
+        # adds the next word to the markov chain
+        words.append(next_word)
 
-
-        random_key = (random_key[1:] + (third_word,))
-
+        # rebinds the random key
+        random_key = (random_key[1:] + (next_word,))
+        
+    # returns the list of words split by a space
     return " ".join(words)
 
-
+# takes in the first file to be read
 input_path_1 = sys.argv[1]
+# takes in the second file to be read
 input_path_2 = sys.argv[2]
-input_path_3 = sys.argv[3]
-n = 4
+# converts the 3rd argument to int
+n = int(sys.argv[3])
 
 # Open the files and turn them into one long string
 input_text = open_and_read_file(input_path_1, input_path_2)
@@ -126,5 +129,3 @@ chains = make_chains(input_text, n)
 random_text = make_text(chains, n)
 
 print random_text
-
-#still need to change n from being hard coded!

@@ -126,3 +126,5 @@ chains = make_chains(input_text, n)
 random_text = make_text(chains, n)
 
 print random_text
+
+#still need to change n from being hard coded!

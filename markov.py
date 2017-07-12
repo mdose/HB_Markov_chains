@@ -75,6 +75,7 @@ def make_text(chains, n):
     """Return text from chains."""
 
     # makes a list of all keys in the dictionary 'chains'
+    # random_keys is the "link"
     random_keys = chains.keys()
 
     while True:
